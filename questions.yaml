@@ -1,0 +1,23 @@
+- question: Quelle était la couleur du cheval Blanc d'Henri IV ?
+  choices:
+    - txt: Blanc
+    - txt: Noir
+    - txt: Rouge
+    - txt: Gris
+      correct: true
+
+- question: Qui peut rejoindre ce projet de quartier ?
+  choices:
+    - txt: Tous les habitants de Clairlieu
+      correct: true
+    - txt: Les habitants de Mars
+    - txt: Le père Noël
+    - txt: Obiwan Kenobi
+
+- question: Combien coûte l'inscription ?
+  choices:
+    - txt: 10 €
+    - txt: 10 000 €
+    - txt: 50 € (une part dans Clairvolt)
+      correct: true
+    - txt: 1000 €
