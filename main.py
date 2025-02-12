@@ -1,6 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+main.py
+
+This module contains the main game logic for "Qui Veut Gagner des Electrons !".
+It initializes the game, handles events, and manages the game loop.
+
+Classes:
+    Game: Manages the game state, including questions, pages, and background
+          effects.
+
+Functions:
+    init_pygame(): Initializes pygame, sets up the display mode, and returns
+                   the screen and clock.
+    handle_events(current_page): Handles pygame events and delegates them to
+                                 the current page.
+    main(): The main function that initializes the game, runs the game loop,
+            and handles cleanup.
+"""
+
+
 import pygame
 from time import time
 from math import sin, cos

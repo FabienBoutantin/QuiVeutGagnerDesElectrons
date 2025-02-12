@@ -1,6 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+fonts.py
+
+This module provides a Fonts class to manage different font sizes and render
+text with pygame.
+
+Classes:
+    Fonts: A class to initialize and manage different font sizes and render
+           text.
+
+Usage:
+    fonts.init()
+    big_font = fonts.big()
+    normal_font = fonts.normal()
+    small_font = fonts.small()
+    rendered_text = fonts.render_text_at_best(font, text, color, width, height)
+"""
+
+
 import pygame
 
 

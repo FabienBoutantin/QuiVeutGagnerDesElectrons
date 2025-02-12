@@ -1,6 +1,37 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+This module defines various Page classes for a quiz game using the Pygame
+library.
+Each Page class represents a different state or screen in the game, such as
+the question screen,
+startup screen, good answer screen, bad answer screen, victory screen, and
+various lifeline screens.
+
+Classes:
+    Page: Abstract base class for all pages.
+    QuestionPage: Represents the page where the question and answers are
+                  displayed.
+    StartUpPage: Represents the startup screen of the game.
+    GoodAnswerPage: Represents the screen displayed when the player selects
+                    the correct answer.
+    BadAnswerPage: Represents the screen displayed when the player selects the
+                   wrong answer.
+    VictoryPage: Represents the screen displayed when the player wins the game.
+    FiftyPage: Represents the screen displayed when the player uses the 50:50
+               lifeline.
+    PhonePage: Represents the screen displayed when the player uses the
+               phone-a-friend lifeline.
+    PublicPage: Represents the screen displayed when the player uses the
+                ask-the-audience lifeline.
+
+Functions:
+    draw_cartouche: Draws a cartouche (decorative frame) around a given
+    rectangle on the screen.
+"""
+
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 import pygame

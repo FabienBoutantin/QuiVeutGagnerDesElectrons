@@ -1,6 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Configuration module for the 'QuiVeutGagnerDesElectrons' game.
+
+This module contains various constants used throughout the game, such as
+colors, dimensions, and reward tiers.
+
+Constants:
+    BACKGROUND_COLOR (tuple): RGB color for the primary background.
+    BACKGROUND_COLOR2 (tuple): RGB color for the secondary background.
+    SPARKLE_COUNT (int): Number of sparkles to display.
+    WIDTH (int): Width of the game window.
+    HEIGHT (int): Height of the game window.
+    REWARDS (tuple): Tuple of reward tiers, each containing a boolean
+                     indicating if it's a milestone and the reward description.
+    QUESTION_HEIGHT (int): Height of the question area.
+    QUESTION_SPAN (int): Vertical span between questions.
+    QUESTION_TEXT_COLOR (tuple): RGB color for the question text.
+    ANSWER_HEIGHT (int): Height of the answer area.
+    ANSWER_SPAN (int): Vertical span between answers.
+    ANSWER_LINE_COLOR (tuple): RGB color for the answer lines.
+"""
+
 
 BACKGROUND_COLOR = (30, 32, 64)
 BACKGROUND_COLOR2 = (64, 32, 40)

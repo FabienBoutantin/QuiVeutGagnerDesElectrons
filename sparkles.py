@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+sparkles.py
+
+This module contains the Sparkles class, which simulates a collection
+of sparkles moving across a screen with optional gravity effects.
+
+Classes:
+    Sparkles: A class to manage and draw sparkles on a screen.
+
+Constants:
+    WIDTH: The width of the screen.
+    HEIGHT: The height of the screen.
+    SPARKLE_COUNT: The default number of sparkles.
+"""
+
+
 import numpy
 
 from config import WIDTH, HEIGHT, SPARKLE_COUNT

@@ -1,6 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+questions.py
+
+This module contains classes to handle quiz questions and their
+associated functionalities.
+It includes the Question class to represent individual questions and
+the QuestionList class to manage a list of questions and provide lifelines
+such as fifty-fifty, phone a friend, and ask the audience.
+
+Classes:
+    Question: Represents a single quiz question.
+    QuestionList: Manages a list of quiz questions and provides lifelines.
+
+Exceptions:
+    VictoryException: Raised when all questions are answered correctly.
+    GoodAnswerException: Raised when a correct answer is given.
+    BadAnswerException: Raised when an incorrect answer is given.
+    FiftyException: Raised when the fifty-fifty lifeline is used.
+    PhoneException: Raised when the phone a friend lifeline is used.
+    PublicException: Raised when the ask the audience lifeline is used.
+"""
+
+
 from pathlib import Path
 from random import randint
 from utils import VictoryException, GoodAnswerException, BadAnswerException, \

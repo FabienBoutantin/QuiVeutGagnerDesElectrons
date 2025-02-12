@@ -1,6 +1,43 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+utils.py
+
+This module contains utility functions and custom exceptions
+for the game "Qui Veut Gagner Des Electrons".
+
+Functions:
+    interp_value(a, b, factor):
+      Interpolates between two values a and b by a given factor.
+    ease_in(a, b, factor):
+      Applies an ease-in interpolation between two values
+      a and b by a given factor.
+    ease_out(a, b, factor):
+      Applies an ease-out interpolation between two values
+      a and b by a given factor.
+    clamp(value, min_value, max_value):
+      Clamps a value between a minimum and maximum value.
+    interp_color(col1, col2, factor):
+      Interpolates between two colors by a given factor.
+    gradient_rect(screen, colors, target_rect):
+      Draws a horizontal-gradient filled rectangle covering the target_rect.
+    get_logo_surf():
+      Loads and returns the logo surface from the assets.
+
+Classes:
+    GameException: Base class for game-related exceptions.
+    GoodAnswerException: Exception raised for a correct answer.
+    BadAnswerException: Exception raised for an incorrect answer.
+    VictoryException: Exception raised for a victory.
+    BackToQuestionException: Exception raised to go back to a question page.
+    FiftyException: Exception raised for the fifty-fifty bonus.
+    PhoneException: Exception raised for the phone-a-friend bonus.
+    PublicException: Exception raised for the ask-the-audience bonus.
+    StartupException: Exception raised for startup-related issues.
+"""
+
+
 import pygame
 
 
