@@ -51,6 +51,7 @@ class Fonts:
         """ Get the small font."""
         return self._font_small
 
+    # pylint: disable=too-many-positional-arguments
     def render_text_at_best(self, font, text, color, width, height):
         """
         Render text with the given font, color, and size, scaling it to fit

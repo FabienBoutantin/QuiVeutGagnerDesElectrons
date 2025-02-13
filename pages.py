@@ -397,6 +397,7 @@ class GoodAnswerPage(Page):
     """
     Represents the screen displayed when the player selects the correct answer.
     """
+    # pylint: disable=too-many-positional-arguments
     def __init__(
             self, question, answer,
             text="Bonne réponse !", color=(100, 150, 10),
