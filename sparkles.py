@@ -22,7 +22,11 @@ import numpy
 from config import WIDTH, HEIGHT, SPARKLE_COUNT
 
 
+# pylint: disable=too-many-instance-attributes
 class Sparkles:
+    """
+    A class to manage and draw sparkles on a screen.
+    """
     __slots__ = (
         "rng", "count", "surfs", "surf_len",
         "xs", "ys", "dxs", "dys",
@@ -30,6 +34,9 @@ class Sparkles:
     )
 
     def __init__(self, surfs, count=SPARKLE_COUNT, gravity=False):
+        """
+        Initializes the Sparkles object with the given surfaces and count.
+        """
         self.rng = numpy.random.default_rng(128)
 
         self.count = count
@@ -48,7 +55,16 @@ class Sparkles:
             self.dys = 0.5 - self.rng.random(count)
         self.life_dt = numpy.full(count, 0.01)
 
+    def get_count(self):
+        """
+        Returns the number of sparkles.
+        """
+        return self.count
+
     def draw(self, screen):
+        """
+        Draws the sparkles on the given screen.
+        """
         self.xs = (self.xs + self.dxs) % WIDTH
         self.ys = (self.ys + self.dys) % HEIGHT
         self.age += self.life_dt
@@ -59,6 +75,7 @@ class Sparkles:
 
         surf_idx = numpy.int8(numpy.sin(self.age) * self.surf_len)
         for i in range(self.count):
+            # pylint: disable=unsubscriptable-object
             screen.blit(
                 self.surfs[surf_idx[i]],
                 (int(self.xs[i]), int(self.ys[i]))

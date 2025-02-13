@@ -24,25 +24,38 @@ import pygame
 
 
 class Fonts:
+    """
+    A class to initialize and manage different font sizes and render text.
+    """
     def __init__(self):
-        # This is intentionally empty
-        pass
+        """ Default constuctor."""
+        self._font_big = None
+        self._font_normal = None
+        self._font_small = None
 
     def init(self):
+        """ Initialize the fonts."""
         self._font_big = pygame.font.SysFont("Arial", 54)
         self._font_normal = pygame.font.SysFont("Arial", 48)
         self._font_small = pygame.font.SysFont("Arial", 32)
 
     def big(self):
+        """ Get the big font."""
         return self._font_big
 
     def normal(self):
+        """ Get the normal font."""
         return self._font_normal
 
     def small(self):
+        """ Get the small font."""
         return self._font_small
 
     def render_text_at_best(self, font, text, color, width, height):
+        """
+        Render text with the given font, color, and size, scaling it to fit
+        within the given width and height.
+        """
         w, h = font.size(text)
         ratio = w/h
         if w > width:

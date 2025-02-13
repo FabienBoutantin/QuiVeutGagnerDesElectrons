@@ -1,0 +1,10 @@
+[MESSAGES CONTROL]
+
+# Allow using the global statement for this little program
+disable=W0603
+
+# Allow up to 7 parameters in function definitions
+max-args=7
+
+# Allow specific extension packages
+extension-pkg-allow-list=pygame

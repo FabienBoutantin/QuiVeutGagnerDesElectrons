@@ -21,13 +21,13 @@ Functions:
 """
 
 
-import pygame
 from time import time
 from math import sin, cos
 from pathlib import Path
-from psutil import Process as psutil_Process
-from sparkles import Sparkles
 from sys import argv as sys_argv
+from psutil import Process as psutil_Process
+import pygame
+from sparkles import Sparkles
 
 from config import WIDTH, HEIGHT, SPARKLE_COUNT
 from config import BACKGROUND_COLOR, BACKGROUND_COLOR2
@@ -43,6 +43,10 @@ from utils import VictoryException, GoodAnswerException, \
 
 
 def init_pygame():
+    """
+    Initializes pygame, sets up the display mode, and returns the screen and
+    clock.
+    """
     pygame.init()
     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
     flags = pygame.SCALED
@@ -54,6 +58,9 @@ def init_pygame():
 
 
 def handle_events(current_page):
+    """
+    Handles pygame events and delegates them to the current page.
+    """
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
@@ -66,6 +73,9 @@ def handle_events(current_page):
 
 
 class Game:
+    """
+    Manages the game state, including questions, pages, and background effects.
+    """
     __slots__ = (
         "questions", "question_page", "current_page",
         "sparkles",
@@ -73,6 +83,9 @@ class Game:
     )
 
     def __init__(self):
+        """
+        Initializes the game state.
+        """
         self.questions = QuestionList()
         self.question_page = QuestionPage(self.questions)
         self.question_page.update_question()
@@ -86,13 +99,6 @@ class Game:
         self.footer_x = 0
         self.footer_y = HEIGHT - self.footer_surf.get_height() - 4
 
-        sparkle_surfs = list()
-        for p in sorted(Path("assets").glob("confetti*.png")):
-            surf = pygame.image.load(str(p))
-            surf.set_alpha(200)
-            sparkle_surfs.append(surf)
-        self.sparkles = Sparkles(sparkle_surfs, 300, gravity=1)
-
         transp_surf = pygame.surface.Surface((1, 1))
         transp_surf.set_alpha(0)
         sparkle_surfs = [transp_surf for _ in range(4)]
@@ -103,6 +109,9 @@ class Game:
         self.sparkles = Sparkles(sparkle_surfs, SPARKLE_COUNT)
 
     def fill_background(self, screen, cur_time):
+        """
+        Fills the background with a gradient and draws the sparkles.
+        """
         gradient_rect(
             screen,
             (
@@ -134,9 +143,15 @@ class Game:
         )
 
     def reset(self):
+        """
+        Resets the game state.
+        """
         self.questions.reset()
 
     def step(self, screen, cur_time, dt) -> bool:
+        """
+        Advances the game state by one frame.
+        """
         try:
             if not handle_events(self.current_page):
                 return True
@@ -168,6 +183,10 @@ class Game:
 
 
 def main():
+    """
+    The main function that initializes the game, runs the game loop, and
+    handles cleanup.
+    """
     screen, clock = init_pygame()
     fonts.init()
 
@@ -192,9 +211,8 @@ def main():
     print(f"\n{count} images drawn in {duration:.02f} s")
     print(f"  mean: {count / duration:.02f} FPS")
     # print memory usage for this script
-    print("Top memory usage: {:.2f} MB".format(
-        psutil_Process().memory_info().rss / 1024 / 1024
-    ))
+    memory = psutil_Process().memory_info().rss / 1024 / 1024
+    print(f"Top memory usage: {memory:.2f} MB")
 
     pygame.quit()
 

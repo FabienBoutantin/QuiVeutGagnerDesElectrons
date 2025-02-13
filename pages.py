@@ -34,8 +34,8 @@ Functions:
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-import pygame
 from time import time
+import pygame
 
 from config import WIDTH, HEIGHT, QUESTION_HEIGHT, QUESTION_SPAN, \
                    ANSWER_HEIGHT, ANSWER_SPAN, \
@@ -53,34 +53,55 @@ QUESTION_RECT = pygame.Rect(
     (WIDTH - QUESTION_SPAN * 2, QUESTION_HEIGHT)
 )
 
-ANSWER_RECTS = list()
-for y in range(2):
-    for x in range(2):
-        left = x * (WIDTH // 2) + ANSWER_SPAN
-        top = HEIGHT // 2 + QUESTION_HEIGHT + y * ANSWER_HEIGHT
-        top += y * ANSWER_SPAN // 2
-        width = WIDTH // 2 - ANSWER_SPAN * 2
-        height = HEIGHT // 4 - ANSWER_HEIGHT
-        ANSWER_RECTS.append(pygame.Rect(left, top, width, height))
+
+def get_answer_rect_list() -> list:
+    """
+    Returns a list of pygame.Rect objects representing the answer rectangles.
+    """
+    result = []
+    for y in range(2):
+        for x in range(2):
+            left = x * (WIDTH // 2) + ANSWER_SPAN
+            top = HEIGHT // 2 + QUESTION_HEIGHT + y * ANSWER_HEIGHT
+            top += y * ANSWER_SPAN // 2
+            width = WIDTH // 2 - ANSWER_SPAN * 2
+            height = HEIGHT // 4 - ANSWER_HEIGHT
+            result.append(pygame.Rect(left, top, width, height))
+    return result
+
+
+ANSWER_RECTS = get_answer_rect_list()
 
 ANSWER_KEYS = (pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d)
 
 
 class Page(ABC):
+    """
+    Abstract base class for all pages in the game.
+    """
     @abstractmethod
     def draw(self, screen, cur_time, dt):
-        pass
+        """
+        Draws the page on the screen.
+        """
 
     def update(self, cur_time, dt):
-        # Left empty on purpose
-        pass
+        """
+        Updates the page state.
+        """
 
     @abstractmethod
     def handle_event(self, event):
-        pass
+        """
+        Handles the given event.
+        """
 
 
 def draw_cartouche(screen, rect, span, selection=False):
+    """
+    Draws a cartouche (decorative frame) around a given rectangle on
+    the given screen.
+    """
     if selection:
         back_color = (200, 200, 0)
     else:
@@ -118,20 +139,27 @@ def draw_cartouche(screen, rect, span, selection=False):
     )
 
 
+# pylint: disable=too-many-instance-attributes
 class QuestionPage(Page):
+    """
+    Represents the page where the question and answers are displayed.
+    """
     def __init__(self, question_list):
+        """
+        Initializes the QuestionPage object with the given question list.
+        """
         super().__init__()
         self.question_list = question_list
         self.current_question_idx = None
         self.logo_surface = get_logo_surf()
         self.logo_pos_x = (WIDTH - self.logo_surface.get_size()[0]) // 2
-        self.logo_pos_y = (HEIGHT // 2 - self.logo_surface.get_size()[1])
+        self.logo_pos_y = HEIGHT // 2 - self.logo_surface.get_size()[1]
         self.logo_pos_y //= 2
         self.logo_pos_y -= 20
         self.question_txt_surf = None
         self.proposition_surfs = [None, None, None, None]
 
-        self.buttons = list()
+        self.buttons = []
         # 50:50 button
         action = self.question_list.use_fifty
         used = self.question_list.is_fifty_used
@@ -172,6 +200,9 @@ class QuestionPage(Page):
         self.buttons.append((txt, rect, action, used))
 
     def handle_event(self, event):
+        """
+        Handles the given event.
+        """
         if event.type == pygame.KEYDOWN:
             if event.key in ANSWER_KEYS:
                 answer = ANSWER_KEYS.index(event.key)
@@ -186,6 +217,9 @@ class QuestionPage(Page):
                     action()
 
     def update_question(self):
+        """
+        Updates the current question and its text.
+        """
         question = self.question_list.get_current_question()
         self.current_question_idx = self.question_list.current_question_idx()
 
@@ -199,6 +233,9 @@ class QuestionPage(Page):
         self.proposition_surfs = [None, None, None, None]
 
     def draw(self, screen, cur_time, dt):
+        """
+        Draws the question and answers on the screen.
+        """
         question = self.question_list.get_current_question()
 
         screen.blit(
@@ -236,6 +273,9 @@ class QuestionPage(Page):
                 )
 
     def draw_question(self, screen):
+        """
+        Draws the question on the screen.
+        """
         draw_cartouche(screen, QUESTION_RECT, QUESTION_SPAN)
 
         w, h = self.question_txt_surf.get_size()
@@ -248,6 +288,9 @@ class QuestionPage(Page):
         )
 
     def draw_proposition(self, screen, i, text, font):
+        """
+        Draws the given proposition on the screen.
+        """
         is_selected = ANSWER_RECTS[i].collidepoint(pygame.mouse.get_pos())
         draw_cartouche(
             screen,
@@ -271,12 +314,18 @@ class QuestionPage(Page):
 
 
 class StartUpPage(Page):
+    """
+    Represents the startup screen of the game.
+    """
     def __init__(self):
+        """
+        Initializes the StartUpPage object.
+        """
         super().__init__()
         self.animate_to_question = False
         self.logo_surface = get_logo_surf()
         self.question_logo_x = (WIDTH - self.logo_surface.get_size()[0]) // 2
-        self.question_logo_y = (HEIGHT // 2 - self.logo_surface.get_size()[1])
+        self.question_logo_y = HEIGHT // 2 - self.logo_surface.get_size()[1]
         self.question_logo_y //= 2
         self.question_logo_y -= 20
         self.start_time = time()
@@ -286,6 +335,9 @@ class StartUpPage(Page):
         pygame.mouse.set_visible(False)
 
     def draw(self, screen, cur_time, dt):
+        """
+        Draws the startup screen on the given screen.
+        """
         if self.animate_to_question:
             if cur_time - self.start_time > 2.5:
                 pygame.mouse.set_visible(True)
@@ -330,6 +382,9 @@ class StartUpPage(Page):
         )
 
     def handle_event(self, event):
+        """
+        Handles the given event.
+        """
         if self.animate_to_question:
             return
         if event.type in (pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
@@ -337,13 +392,21 @@ class StartUpPage(Page):
             self.start_time = time()
 
 
+# pylint: disable=too-many-instance-attributes
 class GoodAnswerPage(Page):
+    """
+    Represents the screen displayed when the player selects the correct answer.
+    """
     def __init__(
             self, question, answer,
             text="Bonne réponse !", color=(100, 150, 10),
             exception=BackToQuestionException,
             time_to_wait=4
     ):
+        """
+        Initializes the GoodAnswerPage object with the given question, answer,
+        text, color, exception, and time to wait.
+        """
         super().__init__()
         self.text = text
         self.color = color
@@ -358,6 +421,9 @@ class GoodAnswerPage(Page):
         self.answer_surface = None
 
     def draw(self, screen, cur_time, dt):
+        """
+        Draws the good answer screen on the given screen.
+        """
         if cur_time - self.start_time > self.time_to_wait:
             pygame.mouse.set_visible(True)
             pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
@@ -400,7 +466,10 @@ class GoodAnswerPage(Page):
             )
         )
 
-    def draw_rewards(self, screen, cur_time, dt):
+    def draw_rewards(self, screen):
+        """
+        Draws the rewards on the given screen.
+        """
         y_start = int(HEIGHT * 0.9)
         for i, (step, reward) in enumerate(REWARDS):
             if step:
@@ -430,6 +499,9 @@ class GoodAnswerPage(Page):
             y_start -= surface.get_height() + 10
 
     def handle_event(self, event):
+        """
+        Handles the given event.
+        """
         go_back = \
             event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE \
             or \
@@ -441,13 +513,23 @@ class GoodAnswerPage(Page):
 
 
 class BadAnswerPage(GoodAnswerPage):
+    """
+    Represents the screen displayed when the player selects the wrong answer.
+    """
     def __init__(
         self, question, answer,
         text="Mauvaise réponse !", color=(255, 0, 0)
     ):
+        """
+        Initializes the BadAnswerPage object with the given question, answer,
+        text, and color.
+        """
         super().__init__(question, answer, text, color, StartupException, 8)
 
     def draw(self, screen, cur_time, dt):
+        """
+        Draws the bad answer screen on the given screen.
+        """
         super().draw(screen, cur_time, dt)
         if cur_time - self.start_time > 2:
             pygame.draw.line(
@@ -476,7 +558,13 @@ class BadAnswerPage(GoodAnswerPage):
 
 
 class VictoryPage(Page):
+    """
+    Represents the screen displayed when the player wins the game.
+    """
     def __init__(self):
+        """
+        Initializes the VictoryPage object.
+        """
         super().__init__()
         self.start_time = time()
         self.texts = (
@@ -488,7 +576,7 @@ class VictoryPage(Page):
             ("https://www.clairvolt.fr", (255, 255, 0)),
         )
 
-        sparkle_surfs = list()
+        sparkle_surfs = []
         for p in sorted(Path("assets").glob("confetti*.png")):
             surf = pygame.image.load(str(p))
             surf.set_alpha(200)
@@ -496,6 +584,9 @@ class VictoryPage(Page):
         self.sparkles = Sparkles(sparkle_surfs, 300, gravity=1)
 
     def draw(self, screen, cur_time, dt):
+        """
+        Draws the victory screen on the given screen.
+        """
         if cur_time - self.start_time > 10:
             raise StartupException()
 
@@ -514,12 +605,19 @@ class VictoryPage(Page):
             y_start += surface.get_height() + 10
 
     def handle_event(self, event):
-        # Left empty on purpose
-        pass
+        """
+        Handles the given event.
+        """
 
 
 class FiftyPage(Page):
+    """
+    Represents the screen displayed when the player uses the 50:50 lifeline.
+    """
     def __init__(self, question):
+        """
+        Initializes the FiftyPage object with the given question.
+        """
         super().__init__()
         self.start_time = time()
         self.question = question
@@ -537,6 +635,9 @@ class FiftyPage(Page):
             )
 
     def draw(self, screen, cur_time, dt):
+        """
+        Draws the 50:50 screen on the given screen.
+        """
         if cur_time - self.start_time > 4:
             raise BackToQuestionException()
 
@@ -553,11 +654,20 @@ class FiftyPage(Page):
             y_start += surface.get_height() + 20
 
     def handle_event(self, event):
-        return super().handle_event(event)
+        """
+        Handles the given event.
+        """
 
 
 class PhonePage(Page):
+    """
+    Represents the screen displayed when the player uses the phone-a-friend
+    lifeline.
+    """
     def __init__(self, question):
+        """
+        Initializes the PhonePage object with the given question.
+        """
         super().__init__()
         self.question = question
         self.start_time = time()
@@ -577,6 +687,9 @@ class PhonePage(Page):
         self.texts.append((f"{chr(ord('A')+idx)} à {v}%", (200, 200, 200)))
 
     def draw(self, screen, cur_time, dt):
+        """
+        Draws the phone-a-friend screen on the given screen.
+        """
         if cur_time - self.start_time > 5:
             raise BackToQuestionException()
 
@@ -593,11 +706,20 @@ class PhonePage(Page):
             y_start += surface.get_height() + 20
 
     def handle_event(self, event):
-        return super().handle_event(event)
+        """
+        Handles the given event.
+        """
 
 
 class PublicPage(Page):
+    """
+    Represents the screen displayed when the player uses the ask-the-audience
+    lifeline.
+    """
     def __init__(self, question):
+        """
+        Initializes the PublicPage object with the given question.
+        """
         super().__init__()
         self.question = question
         self.start_time = time()
@@ -607,6 +729,9 @@ class PublicPage(Page):
         ]
 
     def draw(self, screen, cur_time, dt):
+        """
+        Draws the ask-the-audience screen on the given screen.
+        """
         if cur_time - self.start_time > 8:
             raise BackToQuestionException()
 
@@ -654,4 +779,6 @@ class PublicPage(Page):
             y_start += surface.get_height() + 20
 
     def handle_event(self, event):
-        return super().handle_event(event)
+        """
+        Handles the given event.
+        """
