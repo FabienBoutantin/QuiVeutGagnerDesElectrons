@@ -40,6 +40,8 @@ import pygame
 from config import WIDTH, HEIGHT, QUESTION_HEIGHT, QUESTION_SPAN, \
                    ANSWER_HEIGHT, ANSWER_SPAN, \
                    ANSWER_LINE_COLOR, QUESTION_TEXT_COLOR, \
+                   ANSWER_SELECTION_COLOR, ANSWER_BACKGROUND_COLOR, \
+                   DEFAULT_TEXT_COLOR, GOOD_TEXT_COLOR, BAD_TEXT_COLOR, \
                    REWARDS
 from fonts import fonts
 from sparkles import Sparkles
@@ -103,9 +105,9 @@ def draw_cartouche(screen, rect, span, selection=False):
     the given screen.
     """
     if selection:
-        back_color = (200, 200, 0)
+        back_color = ANSWER_SELECTION_COLOR
     else:
-        back_color = (55, 25, 55)
+        back_color = ANSWER_BACKGROUND_COLOR
     # Main rect
     pygame.draw.rect(screen, back_color, rect, 0, span)
     pygame.draw.rect(screen, ANSWER_LINE_COLOR, rect, 4, span)
@@ -163,7 +165,7 @@ class QuestionPage(Page):
         # 50:50 button
         action = self.question_list.use_fifty
         used = self.question_list.is_fifty_used
-        txt = fonts.normal().render("50 %", True, (255, 255, 0))
+        txt = fonts.normal().render("50 %", True, ANSWER_SELECTION_COLOR)
         rect = pygame.Rect(
             WIDTH - txt.get_width() - txt.get_height() * 2,
             0,
@@ -176,7 +178,7 @@ class QuestionPage(Page):
         # phone call button
         used = self.question_list.is_phone_used
         action = self.question_list.use_phone
-        txt = fonts.normal().render("\u2706", True, (255, 255, 0))
+        txt = fonts.normal().render("\u2706", True, ANSWER_SELECTION_COLOR)
         rect = pygame.Rect(
             WIDTH - txt.get_width() - txt.get_height() * 2,
             4,
@@ -189,7 +191,7 @@ class QuestionPage(Page):
         # the Public button ("\U0001F5EB" was good but is unknown)
         used = self.question_list.is_public_used
         action = self.question_list.use_public
-        txt = fonts.normal().render("Vote", True, (255, 255, 0))
+        txt = fonts.normal().render("Vote", True, ANSWER_SELECTION_COLOR)
         rect = pygame.Rect(
             WIDTH - txt.get_width() - txt.get_height() * 2,
             4,
@@ -249,9 +251,9 @@ class QuestionPage(Page):
 
         for txt, rect, _, used in self.buttons:
             if not used() and rect.collidepoint(pygame.mouse.get_pos()):
-                back_color = (200, 200, 0)
+                back_color = ANSWER_SELECTION_COLOR
             else:
-                back_color = (55, 25, 55)
+                back_color = ANSWER_BACKGROUND_COLOR
 
             span = rect.height // 2
             pygame.draw.rect(screen, back_color, rect, 0, span)
@@ -266,7 +268,7 @@ class QuestionPage(Page):
             if used():
                 pygame.draw.line(
                     screen,
-                    (255, 0, 0),
+                    BAD_TEXT_COLOR,
                     rect.topleft,
                     rect.bottomright,
                     15
@@ -301,7 +303,7 @@ class QuestionPage(Page):
         if is_selected:
             txt_color = (0, 0, 255)
         else:
-            txt_color = (255, 255, 255)
+            txt_color = DEFAULT_TEXT_COLOR
         answer_txt = font.render(
             f'{chr(ord("A")+i)} : ', True, QUESTION_TEXT_COLOR
         )
@@ -330,7 +332,7 @@ class StartUpPage(Page):
         self.question_logo_y -= 20
         self.start_time = time()
         self.title_surface = fonts.big().render(
-            "Bienvenue pour jouer à", True, (255, 255, 255)
+            "Bienvenue pour jouer à", True, DEFAULT_TEXT_COLOR
         )
         pygame.mouse.set_visible(False)
 
@@ -474,9 +476,9 @@ class GoodAnswerPage(Page):
         y_start = int(HEIGHT * 0.9)
         for i, (step, reward) in enumerate(REWARDS):
             if step:
-                color = (255, 255, 0)
+                color = ANSWER_SELECTION_COLOR
             else:
-                color = (200, 200, 200)
+                color = DEFAULT_TEXT_COLOR
             surface = fonts.small().render(reward, True, color)
             screen.blit(
                 surface,
@@ -519,7 +521,7 @@ class BadAnswerPage(GoodAnswerPage):
     """
     def __init__(
         self, question, answer,
-        text="Mauvaise réponse !", color=(255, 0, 0)
+        text="Mauvaise réponse !", color=BAD_TEXT_COLOR
     ):
         """
         Initializes the BadAnswerPage object with the given question, answer,
@@ -534,7 +536,7 @@ class BadAnswerPage(GoodAnswerPage):
         super().draw(screen, cur_time, dt)
         if cur_time - self.start_time > 2:
             pygame.draw.line(
-                screen, (255, 0, 0),
+                screen, BAD_TEXT_COLOR,
                 (
                     (WIDTH - self.answer_surface.get_width()) // 2,
                     HEIGHT // 2 + self.answer_surface.get_height()
@@ -547,7 +549,7 @@ class BadAnswerPage(GoodAnswerPage):
             )
             good_answer = self.question.answers[self.question.correct_answer]
             good_answer_surface = fonts.normal().render(
-                good_answer, True, (0, 255, 0)
+                good_answer, True, GOOD_TEXT_COLOR
             )
             screen.blit(
                 good_answer_surface,
@@ -569,12 +571,12 @@ class VictoryPage(Page):
         super().__init__()
         self.start_time = time()
         self.texts = (
-            ("Bravo ! Vous avez gagné !", (0, 255, 0)),
-            ("Vous pouvez maintenant participer", (200, 200, 200)),
-            ("à ce projet de quartier !", (200, 200, 200)),
-            ("", (0, 255, 0)),
-            ("Plus d'informations sur :", (255, 255, 0)),
-            ("https://www.clairvolt.fr", (255, 255, 0)),
+            ("Bravo ! Vous avez gagné !", GOOD_TEXT_COLOR),
+            ("Vous pouvez maintenant participer", DEFAULT_TEXT_COLOR),
+            ("à ce projet de quartier !", DEFAULT_TEXT_COLOR),
+            ("", (0, 0, 0)),
+            ("Plus d'informations sur :", ANSWER_SELECTION_COLOR),
+            ("https://www.clairvolt.fr", ANSWER_SELECTION_COLOR),
         )
 
         sparkle_surfs = []
@@ -623,15 +625,15 @@ class FiftyPage(Page):
         self.start_time = time()
         self.question = question
         self.texts = [
-            ("Vous avez utilisé le 50:50", (255, 255, 0)),
-            ("Vous avez maintenant le choix", (200, 200, 200)),
-            ("entre les deux réponses suivantes", (200, 200, 200)),
+            ("Vous avez utilisé le 50:50", ANSWER_SELECTION_COLOR),
+            ("Vous avez maintenant le choix", DEFAULT_TEXT_COLOR),
+            ("entre les deux réponses suivantes", DEFAULT_TEXT_COLOR),
         ]
         for i in question.fifty_fifty:
             self.texts.append(
                 (
                     f'{chr(ord("A") + i)} : {question.answers[i]}',
-                    (200, 200, 200)
+                    DEFAULT_TEXT_COLOR
                 )
             )
 
@@ -673,19 +675,19 @@ class PhonePage(Page):
         self.question = question
         self.start_time = time()
         self.texts = [
-            ("Vous avez utilisé le téléphone", (255, 255, 0)),
-            ("Votre ami•e vous a dit :", (200, 200, 200)),
+            ("Vous avez utilisé le téléphone", ANSWER_SELECTION_COLOR),
+            ("Votre ami•e vous a dit :", DEFAULT_TEXT_COLOR),
         ]
         idx, v = question.phone
         if question.is_right_answer(idx):
             self.texts.append(
-                ("Je pense que la réponse est :", (200, 200, 200))
+                ("Je pense que la réponse est :", DEFAULT_TEXT_COLOR)
             )
         else:
             self.texts.append(
-                ("Je ne suis pas sur, mais :", (200, 200, 200))
+                ("Je ne suis pas sur, mais :", DEFAULT_TEXT_COLOR)
             )
-        self.texts.append((f"{chr(ord('A')+idx)} à {v}%", (200, 200, 200)))
+        self.texts.append((f"{chr(ord('A')+idx)} à {v}%", DEFAULT_TEXT_COLOR))
 
     def draw(self, screen, cur_time, dt):
         """
@@ -725,8 +727,8 @@ class PublicPage(Page):
         self.question = question
         self.start_time = time()
         self.texts = [
-            ("Vous avez utilisé le vote du public.", (255, 255, 0)),
-            ("Voici les résultats :", (200, 200, 200)),
+            ("Vous avez utilisé le vote du public.", ANSWER_SELECTION_COLOR),
+            ("Voici les résultats :", DEFAULT_TEXT_COLOR),
         ]
 
     def draw(self, screen, cur_time, dt):
@@ -753,7 +755,7 @@ class PublicPage(Page):
             surface = fonts.big().render(
                 f"{chr(ord('A')+i)} : {txt}",
                 True,
-                (200, 200, 200)
+                DEFAULT_TEXT_COLOR
             )
             screen.blit(
                 surface,
@@ -765,7 +767,7 @@ class PublicPage(Page):
 
             pygame.draw.rect(
                 screen,
-                (200, 200, 200),
+                DEFAULT_TEXT_COLOR,
                 (
                     WIDTH // 2 + 10,
                     y_start,
