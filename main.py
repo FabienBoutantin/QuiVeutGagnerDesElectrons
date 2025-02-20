@@ -73,6 +73,7 @@ def handle_events(current_page):
     return True
 
 
+# pylint: disable=too-many-instance-attributes
 class Game:
     """
     Manages the game state, including questions, pages, and background effects.
@@ -80,10 +81,11 @@ class Game:
     __slots__ = (
         "questions", "question_page", "current_page",
         "sparkles",
-        "footer_surf", "footer_x", "footer_y"
+        "footer_surf", "footer_x", "footer_y",
+        "dynamic_background"
     )
 
-    def __init__(self):
+    def __init__(self, dynamic_background=True):
         """
         Initializes the game state.
         """
@@ -108,33 +110,37 @@ class Game:
             surf.set_alpha(200)
             sparkle_surfs.append(surf)
         self.sparkles = Sparkles(sparkle_surfs, SPARKLE_COUNT)
+        self.dynamic_background = dynamic_background
 
     def fill_background(self, screen, cur_time):
         """
         Fills the background with a gradient and draws the sparkles.
         """
-        gradient_rect(
-            screen,
-            (
-                interp_color(
-                    BACKGROUND_COLOR, BACKGROUND_COLOR2,
-                    (1.0 + sin(cur_time/2)) / 2
+        if self.dynamic_background:
+            gradient_rect(
+                screen,
+                (
+                    interp_color(
+                        BACKGROUND_COLOR, BACKGROUND_COLOR2,
+                        (1.0 + sin(cur_time/2)) / 2
+                    ),
+                    interp_color(
+                        (0, 0, 0), BACKGROUND_COLOR2,
+                        (1.0 + cos(cur_time/3)) / 2
+                    ),
+                    interp_color(
+                        BACKGROUND_COLOR, (0, 0, 0),
+                        (1.0 + cos(cur_time/7)) / 2
+                    ),
+                    interp_color(
+                        BACKGROUND_COLOR, BACKGROUND_COLOR2,
+                        1.0 - (1.0 + sin(cur_time/2.5)) / 2
+                    ),
                 ),
-                interp_color(
-                    (0, 0, 0), BACKGROUND_COLOR2,
-                    (1.0 + cos(cur_time/3)) / 2
-                ),
-                interp_color(
-                    BACKGROUND_COLOR, (0, 0, 0),
-                    (1.0 + cos(cur_time/7)) / 2
-                ),
-                interp_color(
-                    BACKGROUND_COLOR, BACKGROUND_COLOR2,
-                    1.0 - (1.0 + sin(cur_time/2.5)) / 2
-                ),
-            ),
-            pygame.Rect(0, 0, WIDTH, HEIGHT)
-        )
+                pygame.Rect(0, 0, WIDTH, HEIGHT)
+            )
+        else:
+            screen.fill(BACKGROUND_COLOR)
 
         self.sparkles.draw(screen)
         self.footer_x += 0.001
@@ -196,7 +202,9 @@ def main():
     fonts.init()
 
     # Start the game
-    game = Game()
+    game = Game(
+        dynamic_background="-l" not in sys_argv
+    )
     count = 0
     start_time = time()
     while True:
@@ -211,7 +219,7 @@ def main():
         # print("\r", clock.get_time(), clock.get_fps(), end="    ")
 
         pygame.display.flip()
-        clock.tick(30)
+        clock.tick(300)
 
     duration = time() - start_time
     print(f"\n{count} images drawn in {duration:.02f} s")
