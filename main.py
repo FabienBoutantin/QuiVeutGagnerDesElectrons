@@ -139,10 +139,10 @@ class Game:
                 ),
                 pygame.Rect(0, 0, WIDTH, HEIGHT)
             )
+            self.sparkles.draw(screen)
         else:
             screen.fill(BACKGROUND_COLOR)
 
-        self.sparkles.draw(screen)
         self.footer_x += 0.001
         screen.blit(
             self.footer_surf,
@@ -219,7 +219,7 @@ def main():
         # print("\r", clock.get_time(), clock.get_fps(), end="    ")
 
         pygame.display.flip()
-        clock.tick(300)
+        clock.tick(60)
 
     duration = time() - start_time
     print(f"\n{count} images drawn in {duration:.02f} s")
@@ -229,6 +229,7 @@ def main():
     print(f"Top memory usage: {memory:.2f} MB")
 
     pygame.quit()
+    print("Exit!")
 
 
 if __name__ == "__main__":
