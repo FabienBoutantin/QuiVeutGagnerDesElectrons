@@ -23,6 +23,7 @@ Functions:
 
 from time import time
 from math import sin, cos
+from os import chdir
 from pathlib import Path
 from sys import argv as sys_argv
 from psutil import Process as psutil_Process
@@ -187,9 +188,14 @@ def main():
     The main function that initializes the game, runs the game loop, and
     handles cleanup.
     """
+    # Ensure all assets can be found
+    chdir(Path(__file__).parent)
+
+    # Initialize game engine
     screen, clock = init_pygame()
     fonts.init()
 
+    # Start the game
     game = Game()
     count = 0
     start_time = time()
@@ -205,7 +211,7 @@ def main():
         # print("\r", clock.get_time(), clock.get_fps(), end="    ")
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(30)
 
     duration = time() - start_time
     print(f"\n{count} images drawn in {duration:.02f} s")
