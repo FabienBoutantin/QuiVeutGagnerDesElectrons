@@ -1,17 +1,17 @@
-- question: Quelle était la couleur du cheval Blanc d'Henri IV ?
-  choices:
-    - txt: Blanc
-    - txt: Noir
-    - txt: Rouge
-    - txt: Gris
-      correct: true
+# - question: Quelle était la couleur du cheval Blanc d'Henri IV ?
+#   choices:
+#     - txt: Blanc
+#     - txt: Noir
+#     - txt: Rouge
+#     - txt: Gris
+#       correct: true
 
 - question: Qui peut rejoindre ce projet de quartier ?
   choices:
+    - txt: Le père Noël
     - txt: Tous les habitants de Clairlieu
       correct: true
     - txt: Les habitants de Mars
-    - txt: Le père Noël
     - txt: Obiwan Kenobi
 
 - question: Combien coûte l'inscription ?
@@ -21,3 +21,27 @@
     - txt: 50 € (une part dans Clairvolt)
       correct: true
     - txt: 1000 €
+
+- question: À qui appartient l'installation à la fin ?
+  choices:
+    - txt: Au aliens
+    - txt: Au gouvernement
+    - txt: À vous
+      correct: true
+    - txt: Obiwan Kenobi
+
+- question: Quel compteur faut-il ?
+  choices:
+    - txt: Un compteur de vitesse
+    - txt: Un compteur d'eau
+    - txt: Un compteur de gaz
+    - txt: Un compteur Linky
+      correct: true
+
+- question: Peut-on revendre le surplus d'électricité ?
+  choices:
+    - txt: Oui
+      correct: true
+    - txt: Pas à mon voisin, je ne l'aime pas
+    - txt: Non
+    - txt: Obiwan Kenobi

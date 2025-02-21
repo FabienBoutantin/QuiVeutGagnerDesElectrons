@@ -25,9 +25,10 @@ Exceptions:
 
 
 from pathlib import Path
-from random import randint
+from random import randint, sample
 from yaml import load, SafeLoader
 
+from config import QUESTION_COUNT
 from utils import VictoryException, GoodAnswerException, BadAnswerException, \
     FiftyException, PhoneException, PublicException
 
@@ -36,12 +37,11 @@ class Question:
     """
     Represents a single quiz question.
     """
-    def __init__(self, data, idx):
+    def __init__(self, data):
         """
         Initializes the Question object with the given data and index.
         """
         self.text = data["question"]
-        self.idx = idx
         self.answers = []
         self.correct_answer = 0
         self.fifty_fifty = set()
@@ -151,8 +151,14 @@ class QuestionList:
         # Read the YAML file
         with yaml_file.open("r") as f:
             data = load(f, Loader=SafeLoader)  # Load the YAML file
-        for i, item in enumerate(data):
-            self.questions.append(Question(item, i))
+        # pick randomly some items
+        data = sample(
+            data,
+            # Protect against too few items
+            min(len(data), QUESTION_COUNT)
+        )
+        for item in data:
+            self.questions.append(Question(item))
             # print(Question(item))
 
     def is_fifty_used(self) -> bool:
