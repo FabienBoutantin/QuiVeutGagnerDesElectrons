@@ -41,8 +41,7 @@ from config import WIDTH, HEIGHT, QUESTION_HEIGHT, QUESTION_SPAN, \
                    ANSWER_HEIGHT, ANSWER_SPAN, \
                    ANSWER_LINE_COLOR, QUESTION_TEXT_COLOR, \
                    ANSWER_SELECTION_COLOR, ANSWER_BACKGROUND_COLOR, \
-                   DEFAULT_TEXT_COLOR, GOOD_TEXT_COLOR, BAD_TEXT_COLOR, \
-                   REWARDS
+                   DEFAULT_TEXT_COLOR, GOOD_TEXT_COLOR, BAD_TEXT_COLOR
 from fonts import fonts
 from sparkles import Sparkles
 from utils import BackToQuestionException, StartupException
@@ -152,14 +151,21 @@ class QuestionPage(Page):
         """
         super().__init__()
         self.question_list = question_list
-        self.current_question_idx = None
+        self.current_question_idx = self.question_list.current_question_idx()
         self.logo_surface = get_logo_surf()
         self.logo_pos_x = (WIDTH - self.logo_surface.get_size()[0]) // 2
         self.logo_pos_y = HEIGHT // 2 - self.logo_surface.get_size()[1]
         self.logo_pos_y //= 2
         self.logo_pos_y -= 20
-        self.question_txt_surf = None
-        self.proposition_surfs = [None, None, None, None]
+
+        question = self.question_list.get_current_question()
+
+        self.question_txt_surf = fonts.render_text_at_best(
+            fonts.normal(),
+            question.text,
+            QUESTION_TEXT_COLOR,
+            QUESTION_RECT.width - 2 * QUESTION_SPAN, QUESTION_RECT.height
+        )
 
         self.buttons = []
         # 50:50 button
@@ -217,22 +223,6 @@ class QuestionPage(Page):
             for _, rect, action, used in self.buttons:
                 if not used() and rect.collidepoint(mouse_pos):
                     action()
-
-    def update_question(self):
-        """
-        Updates the current question and its text.
-        """
-        question = self.question_list.get_current_question()
-        self.current_question_idx = self.question_list.current_question_idx()
-
-        self.question_txt_surf = fonts.render_text_at_best(
-            fonts.normal(),
-            question.text,
-            QUESTION_TEXT_COLOR,
-            QUESTION_RECT.width - 2 * QUESTION_SPAN, QUESTION_RECT.height
-        )
-
-        self.proposition_surfs = [None, None, None, None]
 
     def draw(self, screen, cur_time, dt):
         """
@@ -387,14 +377,16 @@ class StartUpPage(Page):
         """
         Handles the given event.
         """
-        if self.animate_to_question:
-            return
-        if event.type in (pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
+        if not self.animate_to_question \
+                and event.type == pygame.MOUSEBUTTONDOWN:
             self.animate_to_question = True
             self.start_time = time()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            pygame.mouse.set_visible(True)
+            pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
+            raise BackToQuestionException()
 
 
-# pylint: disable=too-many-instance-attributes
 class GoodAnswerPage(Page):
     """
     Represents the screen displayed when the player selects the correct answer.
@@ -411,17 +403,19 @@ class GoodAnswerPage(Page):
         text, color, exception, and time to wait.
         """
         super().__init__()
-        self.text = text
-        self.color = color
-        self.question = question
-        self.answer = question.answers[answer]
         self.exception = exception
         self.time_to_wait = time_to_wait
         self.start_time = time()
         pygame.mouse.set_visible(False)
-        self.title_surface = None
-        self.question_surface = None
-        self.answer_surface = None
+        self.title_surface = fonts.big().render(
+            text, True, color
+        )
+        self.question_surface = fonts.normal().render(
+            question.text, True, QUESTION_TEXT_COLOR
+        )
+        self.answer_surface = fonts.normal().render(
+            question.answers[answer], True, ANSWER_LINE_COLOR
+        )
 
     def draw(self, screen, cur_time, dt):
         """
@@ -431,18 +425,6 @@ class GoodAnswerPage(Page):
             pygame.mouse.set_visible(True)
             pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
             raise self.exception()
-
-        if self.title_surface is None:
-            self.title_surface = fonts.big().render(
-                self.text, True, self.color
-            )
-            self.question_surface = fonts.normal().render(
-                self.question.text, True, QUESTION_TEXT_COLOR
-            )
-            self.answer_surface = fonts.normal().render(
-                self.answer, True, ANSWER_LINE_COLOR
-            )
-
         title_offset_x = (WIDTH - self.title_surface.get_size()[0]) // 2
         src_y = -2 * self.title_surface.get_height()
         target_y = ((HEIGHT // 2 - self.title_surface.get_height()) // 2)
@@ -468,38 +450,6 @@ class GoodAnswerPage(Page):
                 HEIGHT // 2
             )
         )
-
-    def draw_rewards(self, screen):
-        """
-        Draws the rewards on the given screen.
-        """
-        y_start = int(HEIGHT * 0.9)
-        for i, (step, reward) in enumerate(REWARDS):
-            if step:
-                color = ANSWER_SELECTION_COLOR
-            else:
-                color = DEFAULT_TEXT_COLOR
-            surface = fonts.small().render(reward, True, color)
-            screen.blit(
-                surface,
-                (
-                    10,
-                    y_start
-                )
-            )
-            if i == self.question.idx:
-                pygame.draw.rect(
-                    screen,
-                    color,
-                    (
-                        0,
-                        y_start - 2,
-                        surface.get_width() + 20,
-                        surface.get_height() + 4
-                    ),
-                    2
-                )
-            y_start -= surface.get_height() + 10
 
     def handle_event(self, event):
         """
@@ -528,6 +478,10 @@ class BadAnswerPage(GoodAnswerPage):
         text, and color.
         """
         super().__init__(question, answer, text, color, StartupException, 8)
+        good_answer = question.answers[question.correct_answer]
+        self.good_answer_surface = fonts.normal().render(
+            good_answer, True, GOOD_TEXT_COLOR
+        )
 
     def draw(self, screen, cur_time, dt):
         """
@@ -547,14 +501,10 @@ class BadAnswerPage(GoodAnswerPage):
                 ),
                 8
             )
-            good_answer = self.question.answers[self.question.correct_answer]
-            good_answer_surface = fonts.normal().render(
-                good_answer, True, GOOD_TEXT_COLOR
-            )
             screen.blit(
-                good_answer_surface,
+                self.good_answer_surface,
                 (
-                    WIDTH // 2 - good_answer_surface.get_width() // 2,
+                    WIDTH // 2 - self.good_answer_surface.get_width() // 2,
                     int(HEIGHT / 2 + self.answer_surface.get_height() * 1.5)
                 )
             )
@@ -570,7 +520,7 @@ class VictoryPage(Page):
         """
         super().__init__()
         self.start_time = time()
-        self.texts = (
+        texts = (
             ("Bravo ! Vous avez gagné !", GOOD_TEXT_COLOR),
             ("Vous pouvez maintenant participer", DEFAULT_TEXT_COLOR),
             ("à ce projet de quartier !", DEFAULT_TEXT_COLOR),
@@ -578,6 +528,9 @@ class VictoryPage(Page):
             ("Plus d'informations sur :", ANSWER_SELECTION_COLOR),
             ("https://www.clairvolt.fr", ANSWER_SELECTION_COLOR),
         )
+        self.surfaces = []
+        for txt, color in texts:
+            self.surfaces.append(fonts.big().render(txt, True, color))
 
         sparkle_surfs = []
         for p in sorted(Path("assets").glob("confetti*.png")):
@@ -596,8 +549,7 @@ class VictoryPage(Page):
         self.sparkles.draw(screen)
 
         y_start = HEIGHT // 4
-        for txt, color in self.texts:
-            surface = fonts.big().render(txt, True, color)
+        for surface in self.surfaces:
             screen.blit(
                 surface,
                 (
@@ -624,18 +576,21 @@ class FiftyPage(Page):
         super().__init__()
         self.start_time = time()
         self.question = question
-        self.texts = [
+        texts = [
             ("Vous avez utilisé le 50:50", ANSWER_SELECTION_COLOR),
             ("Vous avez maintenant le choix", DEFAULT_TEXT_COLOR),
             ("entre les deux réponses suivantes", DEFAULT_TEXT_COLOR),
         ]
         for i in question.fifty_fifty:
-            self.texts.append(
+            texts.append(
                 (
                     f'{chr(ord("A") + i)} : {question.answers[i]}',
                     DEFAULT_TEXT_COLOR
                 )
             )
+        self.surfaces = []
+        for txt, color in texts:
+            self.surfaces.append(fonts.big().render(txt, True, color))
 
     def draw(self, screen, cur_time, dt):
         """
@@ -645,8 +600,7 @@ class FiftyPage(Page):
             raise BackToQuestionException()
 
         y_start = HEIGHT // 4
-        for txt, color in self.texts:
-            surface = fonts.big().render(txt, True, color)
+        for surface in self.surfaces:
             screen.blit(
                 surface,
                 (
@@ -674,20 +628,24 @@ class PhonePage(Page):
         super().__init__()
         self.question = question
         self.start_time = time()
-        self.texts = [
+        texts = [
             ("Vous avez utilisé le téléphone", ANSWER_SELECTION_COLOR),
             ("Votre ami•e vous a dit :", DEFAULT_TEXT_COLOR),
         ]
         idx, v = question.phone
         if question.is_right_answer(idx):
-            self.texts.append(
+            texts.append(
                 ("Je pense que la réponse est :", DEFAULT_TEXT_COLOR)
             )
         else:
-            self.texts.append(
+            texts.append(
                 ("Je ne suis pas sur, mais :", DEFAULT_TEXT_COLOR)
             )
-        self.texts.append((f"{chr(ord('A')+idx)} à {v}%", DEFAULT_TEXT_COLOR))
+        texts.append((f"{chr(ord('A')+idx)} à {v}%", DEFAULT_TEXT_COLOR))
+
+        self.surfaces = []
+        for txt, color in texts:
+            self.surfaces.append(fonts.big().render(txt, True, color))
 
     def draw(self, screen, cur_time, dt):
         """
@@ -697,8 +655,7 @@ class PhonePage(Page):
             raise BackToQuestionException()
 
         y_start = HEIGHT // 4
-        for txt, color in self.texts:
-            surface = fonts.big().render(txt, True, color)
+        for surface in self.surfaces:
             screen.blit(
                 surface,
                 (
@@ -726,10 +683,27 @@ class PublicPage(Page):
         super().__init__()
         self.question = question
         self.start_time = time()
-        self.texts = [
+        texts = [
             ("Vous avez utilisé le vote du public.", ANSWER_SELECTION_COLOR),
             ("Voici les résultats :", DEFAULT_TEXT_COLOR),
         ]
+        self.surfaces = []
+        for txt, color in texts:
+            self.surfaces.append(fonts.big().render(txt, True, color))
+
+        self.answers = []
+        for i, txt in enumerate(self.question.answers):
+            self.answers.append(
+                (
+                    self.question.public[i] / 100 * WIDTH / 2,
+                    fonts.render_text_at_best(
+                        fonts.big(),
+                        f"{chr(ord('A')+i)} : {txt}",
+                        DEFAULT_TEXT_COLOR,
+                        WIDTH // 2, HEIGHT
+                    )
+                )
+            )
 
     def draw(self, screen, cur_time, dt):
         """
@@ -739,8 +713,7 @@ class PublicPage(Page):
             raise BackToQuestionException()
 
         y_start = HEIGHT // 4
-        for txt, color in self.texts:
-            surface = fonts.big().render(txt, True, color)
+        for surface in self.surfaces:
             screen.blit(
                 surface,
                 (
@@ -751,12 +724,7 @@ class PublicPage(Page):
             y_start += surface.get_height() + 10
 
         y_start += 20
-        for i, txt in enumerate(self.question.answers):
-            surface = fonts.big().render(
-                f"{chr(ord('A')+i)} : {txt}",
-                True,
-                DEFAULT_TEXT_COLOR
-            )
+        for i, (value, surface) in enumerate(self.answers):
             screen.blit(
                 surface,
                 (
@@ -773,7 +741,7 @@ class PublicPage(Page):
                     y_start,
                     int(ease_out(
                         0,
-                        self.question.public[i] / 100 * WIDTH / 2,
+                        value,
                         clamp((cur_time - self.start_time) / 3 - i / 4, 0, 1)
                     )),
                     surface.get_height()

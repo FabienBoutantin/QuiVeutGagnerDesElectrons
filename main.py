@@ -90,8 +90,6 @@ class Game:
         Initializes the game state.
         """
         self.questions = QuestionList()
-        self.question_page = QuestionPage(self.questions)
-        self.question_page.update_question()
         self.current_page = StartUpPage()
 
         self.footer_surf = fonts.small().render(
@@ -169,8 +167,7 @@ class Game:
             self.reset()
         except BackToQuestionException:
             try:
-                self.question_page.update_question()
-                self.current_page = self.question_page
+                self.current_page = QuestionPage(self.questions)
             except VictoryException:
                 # if we reach the end of the questions
                 self.current_page = VictoryPage()
