@@ -33,9 +33,10 @@ from sparkles import Sparkles
 from config import WIDTH, HEIGHT, SPARKLE_COUNT
 from config import BACKGROUND_COLOR, BACKGROUND_COLOR2
 from fonts import fonts
-from pages import StartUpPage, QuestionPage, \
-    GoodAnswerPage, BadAnswerPage, VictoryPage, \
-    FiftyPage, PhonePage, PublicPage
+from pages.startup import StartUpPage, VictoryPage
+from pages.question import QuestionPage
+from pages.lifeline import FiftyPage, PhonePage, PublicPage
+from pages.results import GoodAnswerPage, BadAnswerPage
 from questions import QuestionList
 from utils import gradient_rect, interp_color
 from utils import VictoryException, GoodAnswerException, \
