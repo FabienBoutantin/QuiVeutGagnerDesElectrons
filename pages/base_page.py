@@ -42,6 +42,7 @@ class Page(ABC):
         Handles the given event.
         """
 
+    # pylint: disable=too-many-positional-arguments
     def animate_surf_v(self, screen, surf, cur_time, start_time, duration):
         """
         Animates the given surface vertically on the screen.
