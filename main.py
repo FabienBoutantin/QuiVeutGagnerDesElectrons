@@ -214,10 +214,10 @@ def main():
         # if time() - start_time > 10:
         #     break
         # print time per image and FPS
-        # print("\r", clock.get_time(), clock.get_fps(), end="    ")
+        # print("\r", clock.get_time(), "\t", clock.get_fps(), end="    ")
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(30)
 
     duration = time() - start_time
     print(f"\n{count} images drawn in {duration:.02f} s")
