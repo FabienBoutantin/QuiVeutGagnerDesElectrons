@@ -22,6 +22,8 @@ Usage:
 
 import pygame
 
+from config import FONT_BIG, FONT_NORMAL, FONT_SMALL
+
 
 class Fonts:
     """
@@ -35,9 +37,9 @@ class Fonts:
 
     def init(self):
         """ Initialize the fonts."""
-        self._font_big = pygame.font.SysFont("Arial", 54)
-        self._font_normal = pygame.font.SysFont("Arial", 48)
-        self._font_small = pygame.font.SysFont("Arial", 32)
+        self._font_big = pygame.font.SysFont("Arial", FONT_BIG)
+        self._font_normal = pygame.font.SysFont("Arial", FONT_NORMAL)
+        self._font_small = pygame.font.SysFont("Arial", FONT_SMALL)
 
     def big(self):
         """ Get the big font."""
