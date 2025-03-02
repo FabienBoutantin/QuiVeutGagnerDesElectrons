@@ -74,13 +74,12 @@ def handle_events(current_page):
     return True
 
 
-# pylint: disable=too-many-instance-attributes
 class Game:
     """
     Manages the game state, including questions, pages, and background effects.
     """
     __slots__ = (
-        "questions", "question_page", "current_page",
+        "questions", "current_page",
         "sparkles",
         "footer_surf", "footer_pos",
         "dynamic_background"
