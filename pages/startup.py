@@ -42,7 +42,7 @@ class StartUpPage(Page):
         self.start_time = time()
         self.title_surface = fonts.big().render(
             "Bienvenue pour jouer à", True, DEFAULT_TEXT_COLOR
-        )
+        ).convert_alpha()
 
     def draw(self, screen, cur_time, dt):
         """
@@ -112,12 +112,14 @@ class VictoryPage(Page):
         )
         self.surfaces = []
         for txt, color in texts:
-            self.surfaces.append(fonts.big().render(txt, True, color))
+            self.surfaces.append(
+                fonts.big().render(txt, True, color).convert_alpha()
+            )
 
         sparkle_surfs = []
         for p in sorted(Path("assets").glob("confetti*.png")):
             surf = pygame.image.load(str(p))
-            surf.set_alpha(200)
+            surf = surf.convert_alpha()
             sparkle_surfs.append(surf)
         self.sparkles = Sparkles(sparkle_surfs, 300, gravity=1)
 

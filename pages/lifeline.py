@@ -51,7 +51,9 @@ class FiftyPage(Page):
             )
         self.surfaces = []
         for txt, color in texts:
-            self.surfaces.append(fonts.big().render(txt, True, color))
+            self.surfaces.append(
+                fonts.big().render(txt, True, color).convert_alpha()
+            )
 
     def draw(self, screen, cur_time, dt):
         """
@@ -96,7 +98,9 @@ class PhonePage(Page):
 
         self.surfaces = []
         for txt, color in texts:
-            self.surfaces.append(fonts.big().render(txt, True, color))
+            self.surfaces.append(
+                fonts.big().render(txt, True, color).convert_alpha()
+            )
 
     def draw(self, screen, cur_time, dt):
         """
@@ -130,7 +134,9 @@ class PublicPage(Page):
         ]
         self.surfaces = []
         for txt, color in texts:
-            self.surfaces.append(fonts.big().render(txt, True, color))
+            self.surfaces.append(
+                fonts.big().render(txt, True, color).convert_alpha()
+            )
 
         self.answers = []
         self.answer_height = 0
@@ -140,7 +146,7 @@ class PublicPage(Page):
                 f"{chr(ord('A')+i)} : {txt}",
                 DEFAULT_TEXT_COLOR,
                 WIDTH // 2, HEIGHT
-            )
+            ).convert_alpha()
             self.answers.append(
                 (
                     self.question.public[i] / 100 * WIDTH / 2,

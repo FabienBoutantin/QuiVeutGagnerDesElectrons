@@ -52,13 +52,13 @@ class GoodAnswerPage(Page):
         self.start_time = time()
         self.title_surface = fonts.big().render(
             text, True, color
-        )
+        ).convert_alpha()
         self.question_surface = fonts.normal().render(
             question.text, True, QUESTION_TEXT_COLOR
-        )
+        ).convert_alpha()
         self.answer_surface = fonts.normal().render(
             question.answers[answer], True, ANSWER_LINE_COLOR
-        )
+        ).convert_alpha()
 
     def draw(self, screen, cur_time, dt):
         """
@@ -114,7 +114,7 @@ class BadAnswerPage(GoodAnswerPage):
         good_answer = question.answers[question.correct_answer]
         self.good_answer_surface = fonts.normal().render(
             good_answer, True, GOOD_TEXT_COLOR
-        )
+        ).convert_alpha()
 
     def draw(self, screen, cur_time, dt):
         """

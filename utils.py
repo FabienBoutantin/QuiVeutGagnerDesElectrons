@@ -97,9 +97,9 @@ def gradient_rect(
 
     colour_rect = pygame.transform.smoothscale(
         colour_rect,
-        (target_rect.width, target_rect.height)
+        target_rect.size,
+        screen
     )  # stretch to fit new rect!
-    screen.blit(colour_rect, target_rect)
 
 
 def get_logo_surf() -> pygame.Surface:
@@ -108,7 +108,7 @@ def get_logo_surf() -> pygame.Surface:
     """
     global __LOGO_SURF
     if __LOGO_SURF is None:
-        __LOGO_SURF = pygame.image.load("assets/logo.png")
+        __LOGO_SURF = pygame.image.load("assets/logo.png").convert_alpha()
     return __LOGO_SURF
 
 

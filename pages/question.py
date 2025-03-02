@@ -154,7 +154,7 @@ class QuestionPage(Page):
                 )
                 y = (inner_rect.height - answer_txt.get_height()) // 2
                 s.blit(answer_txt, (x, y))
-                surfaces.append(s)
+                surfaces.append(s.convert_alpha())
 
             x = WIDTH // 2 * (i % 2)
             y = self.question_pos[1] + self.question_surf.get_height()
@@ -172,7 +172,11 @@ class QuestionPage(Page):
         # 50:50 button
         action = self.question_list.use_fifty
         used = self.question_list.is_fifty_used
-        txt = fonts.normal().render("50 %", True, ANSWER_SELECTION_COLOR)
+        txt = fonts.normal().render(
+            "50 %",
+            True,
+            ANSWER_SELECTION_COLOR
+        ).convert_alpha()
         rect = pygame.Rect(
             WIDTH - txt.get_width() - txt.get_height() * 2,
             0,
@@ -187,7 +191,11 @@ class QuestionPage(Page):
         action = self.question_list.use_phone
         # Unfortunately the phone emoji is not available in the font
         # "\u2706" was good but is unknown on target system
-        txt = fonts.normal().render("Ami", True, ANSWER_SELECTION_COLOR)
+        txt = fonts.normal().render(
+            "Ami",
+            True,
+            ANSWER_SELECTION_COLOR
+        ).convert_alpha()
         rect = pygame.Rect(
             WIDTH - txt.get_width() - txt.get_height() * 2,
             4,
@@ -200,7 +208,11 @@ class QuestionPage(Page):
         # the Public button ("\U0001F5EB" was good but is unknown)
         used = self.question_list.is_public_used
         action = self.question_list.use_public
-        txt = fonts.normal().render("Publique", True, ANSWER_SELECTION_COLOR)
+        txt = fonts.normal().render(
+            "Publique",
+            True,
+            ANSWER_SELECTION_COLOR
+        ).convert_alpha()
         rect = pygame.Rect(
             WIDTH - txt.get_width() - txt.get_height() * 2,
             4,

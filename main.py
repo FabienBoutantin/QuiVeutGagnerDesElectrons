@@ -96,7 +96,7 @@ class Game:
             "Plus d'informations sur : https://www.clairvolt.fr",
             True,
             (128, 128, 128)
-        )
+        ).convert_alpha()
         self.footer_pos = pygame.rect.Rect(
             (0, HEIGHT - self.footer_surf.get_height() - 4),
             self.footer_surf.get_size()
@@ -104,11 +104,12 @@ class Game:
 
         transp_surf = pygame.surface.Surface((1, 1))
         transp_surf.set_alpha(0)
+        transp_surf.convert_alpha()
         sparkle_surfs = [transp_surf for _ in range(4)]
         for p in sorted(Path("assets").glob("sparkle*.png")):
             surf = pygame.image.load(str(p))
             surf.set_alpha(200)
-            sparkle_surfs.append(surf)
+            sparkle_surfs.append(surf.convert_alpha())
         self.sparkles = Sparkles(sparkle_surfs, SPARKLE_COUNT)
         self.dynamic_background = dynamic_background
 
@@ -134,7 +135,7 @@ class Game:
                     ),
                     interp_color(
                         BACKGROUND_COLOR, BACKGROUND_COLOR2,
-                        1.0 - (1.0 + sin(cur_time/2.5)) / 2
+                        0.5 - sin(cur_time/2.5) / 2
                     ),
                 ),
                 pygame.Rect(0, 0, WIDTH, HEIGHT)
