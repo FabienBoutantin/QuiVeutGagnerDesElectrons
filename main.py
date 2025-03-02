@@ -140,7 +140,7 @@ class Game:
                 ),
                 pygame.Rect(0, 0, WIDTH, HEIGHT)
             )
-            self.sparkles.draw(screen)
+            self.sparkles.draw(screen, dt)
         else:
             screen.fill(BACKGROUND_COLOR)
 

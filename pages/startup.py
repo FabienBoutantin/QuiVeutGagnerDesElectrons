@@ -133,7 +133,7 @@ class VictoryPage(Page):
         if cur_time - self.start_time > 10:
             raise StartupException()
 
-        self.sparkles.draw(screen)
+        self.sparkles.draw(screen, dt)
 
         y_start = HEIGHT // 4
         for surface in self.surfaces:
