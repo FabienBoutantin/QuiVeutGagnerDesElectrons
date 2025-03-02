@@ -82,7 +82,7 @@ class Game:
     __slots__ = (
         "questions", "question_page", "current_page",
         "sparkles",
-        "footer_surf", "footer_x", "footer_y",
+        "footer_surf", "footer_pos",
         "dynamic_background"
     )
 
@@ -98,8 +98,10 @@ class Game:
             True,
             (128, 128, 128)
         )
-        self.footer_x = 0
-        self.footer_y = HEIGHT - self.footer_surf.get_height() - 4
+        self.footer_pos = pygame.rect.Rect(
+            (0, HEIGHT - self.footer_surf.get_height() - 4),
+            self.footer_surf.get_size()
+        )
 
         transp_surf = pygame.surface.Surface((1, 1))
         transp_surf.set_alpha(0)
@@ -111,7 +113,7 @@ class Game:
         self.sparkles = Sparkles(sparkle_surfs, SPARKLE_COUNT)
         self.dynamic_background = dynamic_background
 
-    def fill_background(self, screen, cur_time):
+    def fill_background(self, screen, cur_time, dt):
         """
         Fills the background with a gradient and draws the sparkles.
         """
@@ -142,10 +144,12 @@ class Game:
         else:
             screen.fill(BACKGROUND_COLOR)
 
-        self.footer_x += 0.001
+        self.footer_pos.centerx = int(
+            (1 + cos(cur_time / 10)) * WIDTH / 2
+        )
         screen.blit(
             self.footer_surf,
-            (int(cos(self.footer_x) * WIDTH), self.footer_y)
+            self.footer_pos.topleft
         )
 
     def reset(self):
@@ -161,7 +165,7 @@ class Game:
         try:
             if not handle_events(self.current_page):
                 return True
-            self.fill_background(screen, cur_time)
+            self.fill_background(screen, cur_time, dt)
             self.current_page.draw(screen, cur_time, dt)
         except StartupException:
             self.current_page = StartUpPage()

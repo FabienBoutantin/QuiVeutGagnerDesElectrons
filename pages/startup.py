@@ -35,10 +35,10 @@ class StartUpPage(Page):
         super().__init__()
         self.animate_to_question = False
         self.logo_surface = get_logo_surf()
-        self.question_logo_x = (WIDTH - self.logo_surface.get_size()[0]) // 2
-        self.question_logo_y = HEIGHT // 2 - self.logo_surface.get_size()[1]
-        self.question_logo_y //= 2
-        self.question_logo_y -= 20
+        self.logo_x = (WIDTH - self.logo_surface.get_size()[0]) // 2
+        self.logo_y = HEIGHT // 2 - self.logo_surface.get_size()[1]
+        self.logo_y //= 2
+        self.logo_y -= 20
         self.start_time = time()
         self.title_surface = fonts.big().render(
             "Bienvenue pour jouer à", True, DEFAULT_TEXT_COLOR
@@ -60,9 +60,9 @@ class StartUpPage(Page):
             )
 
         src_x = - self.logo_surface.get_width()
-        target_x = self.question_logo_x
+        target_x = self.logo_x
         src_y = HEIGHT * 0.7 - self.logo_surface.get_height() * 0.5
-        target_y = self.question_logo_y
+        target_y = self.logo_y
         if self.animate_to_question:
             factor = clamp((cur_time - self.start_time) / 2, 0, 1)
             title_offset_x = target_x
