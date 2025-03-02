@@ -43,7 +43,6 @@ class StartUpPage(Page):
         self.title_surface = fonts.big().render(
             "Bienvenue pour jouer à", True, DEFAULT_TEXT_COLOR
         )
-        pygame.mouse.set_visible(False)
 
     def draw(self, screen, cur_time, dt):
         """
@@ -51,8 +50,6 @@ class StartUpPage(Page):
         """
         if self.animate_to_question:
             if cur_time - self.start_time > 2.5:
-                pygame.mouse.set_visible(True)
-                pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
                 raise BackToQuestionException()
         else:
             self.animate_surf_v(
@@ -92,8 +89,6 @@ class StartUpPage(Page):
             self.animate_to_question = True
             self.start_time = time()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            pygame.mouse.set_visible(True)
-            pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
             raise BackToQuestionException()
 
 

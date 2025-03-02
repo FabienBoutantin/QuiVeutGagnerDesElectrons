@@ -43,6 +43,7 @@ class Question:
         """
         self.text = data["question"]
         self.answers = []
+        self.display_answers = []
         self.correct_answer = 0
         self.fifty_fifty = set()
         self.phone = None
@@ -54,6 +55,7 @@ class Question:
                 self.fifty_fifty.add(i)
         while len(self.fifty_fifty) != 2:
             self.fifty_fifty.add(randint(0, 100) % 4)
+        self.display_answers = list(self.answers)
 
     def is_right_answer(self, answer):
         """
@@ -77,7 +79,7 @@ class Question:
         """
         for i in range(4):
             if i not in self.fifty_fifty:
-                self.answers[i] = "---"
+                self.display_answers[i] = "---"
 
     def use_phone(self):
         """
@@ -85,24 +87,27 @@ class Question:
         """
         while True:
             idx = randint(0, 3)
-            if self.answers[idx] != "---":
+            if self.display_answers[idx] != "---":
                 break
         if idx == self.correct_answer:
             v = randint(40, 100)
         else:
             v = randint(0, 70)
-        self.answers[idx] += f" \u2706:{v}%"
+        # Unfortunately the phone emoji is not available in the font
+        # "\u2706" was good but is unknown on target system
+        self.display_answers[idx] += f" \u2706:{v}%"
         self.phone = idx, v
 
     def use_public(self):
         """
         Asks the audience for help with the answer.
         """
-        if "---" in self.answers:
+        if "---" in self.display_answers:
             self.public = [0, 0, 0, 0]
             self.public[self.correct_answer] = randint(40, 90)
             for i in range(4):
-                if self.answers[i] == "---" or i == self.correct_answer:
+                if i == self.correct_answer or \
+                        self.display_answers[i] == "---":
                     continue
                 self.public[i] = 100 - self.public[self.correct_answer]
         else:
@@ -110,9 +115,9 @@ class Question:
             self.public[self.correct_answer] += 100 - sum(self.public)
 
         for i in range(4):
-            if self.answers[i] == "---":
+            if self.display_answers[i] == "---":
                 continue
-            self.answers[i] += f" {self.public[i]}%"
+            self.display_answers[i] += f" {self.public[i]}%"
 
 
 class QuestionList:

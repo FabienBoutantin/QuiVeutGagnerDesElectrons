@@ -50,7 +50,6 @@ class GoodAnswerPage(Page):
         self.exception = exception
         self.time_to_wait = time_to_wait
         self.start_time = time()
-        pygame.mouse.set_visible(False)
         self.title_surface = fonts.big().render(
             text, True, color
         )
@@ -66,8 +65,6 @@ class GoodAnswerPage(Page):
         Draws the good answer screen on the given screen.
         """
         if cur_time - self.start_time > self.time_to_wait:
-            pygame.mouse.set_visible(True)
-            pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
             raise self.exception()
         self.animate_surf_v(
             screen, self.title_surface, cur_time, self.start_time, 2
@@ -98,8 +95,6 @@ class GoodAnswerPage(Page):
             or \
             event.type == pygame.MOUSEBUTTONDOWN and event.button == 3
         if go_back:
-            pygame.mouse.set_visible(True)
-            pygame.mouse.set_pos((WIDTH // 2, HEIGHT // 2))
             raise self.exception()
 
 

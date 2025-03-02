@@ -91,6 +91,8 @@ class QuestionPage(Page):
         self.init_question()
         self.init_lifelines()
 
+        pygame.mouse.set_visible(True)
+
     def init_logo(self):
         """
         Initializes the logo surface and position.
@@ -145,7 +147,7 @@ class QuestionPage(Page):
                     txt_color = DEFAULT_TEXT_COLOR
                 answer_txt = fonts.render_text_at_best(
                     font,
-                    self.question.answers[i],
+                    self.question.display_answers[i],
                     txt_color,
                     inner_rect.width - answer_txt.get_width(),
                     inner_rect.height
@@ -183,7 +185,9 @@ class QuestionPage(Page):
         # phone call button
         used = self.question_list.is_phone_used
         action = self.question_list.use_phone
-        txt = fonts.normal().render("\u2706", True, ANSWER_SELECTION_COLOR)
+        # Unfortunately the phone emoji is not available in the font
+        # "\u2706" was good but is unknown on target system
+        txt = fonts.normal().render("Ami", True, ANSWER_SELECTION_COLOR)
         rect = pygame.Rect(
             WIDTH - txt.get_width() - txt.get_height() * 2,
             4,
@@ -196,7 +200,7 @@ class QuestionPage(Page):
         # the Public button ("\U0001F5EB" was good but is unknown)
         used = self.question_list.is_public_used
         action = self.question_list.use_public
-        txt = fonts.normal().render("Vote", True, ANSWER_SELECTION_COLOR)
+        txt = fonts.normal().render("Publique", True, ANSWER_SELECTION_COLOR)
         rect = pygame.Rect(
             WIDTH - txt.get_width() - txt.get_height() * 2,
             4,

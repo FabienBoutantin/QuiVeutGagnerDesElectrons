@@ -15,7 +15,7 @@ Classes:
 
 
 from abc import ABC, abstractmethod
-from pygame import Surface
+from pygame import Surface, mouse
 
 from config import WIDTH, HEIGHT
 from utils import ease_out, clamp
@@ -25,6 +25,16 @@ class Page(ABC):
     """
     Abstract base class for all pages in the game.
     """
+
+    def __init__(self):
+        """
+        Initializes the Page object.
+        By default, do not show the mouse.
+        """
+        super().__init__()
+        mouse.set_pos((WIDTH // 2, HEIGHT // 2))
+        mouse.set_visible(False)
+
     @abstractmethod
     def draw(self, screen, cur_time, dt):
         """
