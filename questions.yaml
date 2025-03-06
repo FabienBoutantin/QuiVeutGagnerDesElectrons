@@ -14,9 +14,25 @@
     - txt: Les habitants de Mars
     - txt: Obiwan Kenobi
 
-- question: Combien coûte l'inscription ?
+- question: Peut-on avoir des aides ?
   choices:
-    - txt: 10 €
+    - txt: Elles sont déjà incluses
+      correct: true
+    - txt: 100 balles et un mars
+    - txt: La marmotte elle plie l'papier alu
+    - txt: 3 milliards de dollars.
+
+- question: Qu'est ce que l'autoconsommation ?
+  choices:
+    - txt: La consommation de la voiture
+    - txt: Consommer l'électricité que l'on produit
+      correct: true
+    - txt: Consommer l'électricité de son voisin
+    - txt: Une utopie
+
+- question: Combien coûte l'adhésion ?
+  choices:
+    - txt: 100 balles et un mars
     - txt: 10 000 €
     - txt: 50 € (une part dans Clairvolt)
       correct: true
@@ -24,11 +40,11 @@
 
 - question: À qui appartient l'installation à la fin ?
   choices:
-    - txt: Au aliens
+    - txt: Aux aliens
     - txt: Au gouvernement
     - txt: À vous
       correct: true
-    - txt: Obiwan Kenobi
+    - txt: À mon voisin
 
 - question: Quel compteur faut-il ?
   choices:
@@ -44,4 +60,52 @@
       correct: true
     - txt: Pas à mon voisin, je ne l'aime pas
     - txt: Non
-    - txt: Obiwan Kenobi
+    - txt: Seulement à la marmotte
+
+- question: "Clairvolt est une société :"
+  choices:
+    - txt: "À but lucratif"
+    - txt: "par et pour les citoyens"
+      correct: true
+    - txt: "une filiale internationale"
+    - txt: "du CAC40"
+
+- question: "Qui compose Clairvolt ?"
+  choices:
+    - txt: "Des citoyens solidaires"
+      correct: true
+    - txt: "Des électrons libres"
+    - txt: "Des aliens"
+    - txt: "Des marmottes"
+
+- question: "Combien ça coûte ?"
+  choices:
+    - txt: "Un loyer trimestriel"
+      correct: true
+    - txt: "La totalité avant les travaux"
+    - txt: "La totalité après les travaux"
+    - txt: "La peau des fesses"
+
+- question: "Quelle est la durée des travaux ?"
+  choices:
+    - txt: "Cinq minutes"
+    - txt: "Douze mois"
+    - txt: "Toute la vie"
+    - txt: "Environ une semaine"
+      correct: true
+
+- question: "Qu'est-ce qui ne fait pas partie du projet ?"
+  choices:
+    - txt: "Faire du bien à la planète"
+    - txt: "Produire et autoconsommer"
+    - txt: "La solidarité"
+    - txt: "Verser des dividendes aux actionnaires"
+      correct: true
+
+- question: "Êtes-vous prêt à vous investir ?"
+  choices:
+    - txt: "La solidarité fait partie du projet"
+      correct: true
+    - txt: "Je ne peux pas, j'ai puzzle"
+    - txt: "C'est plus de mon âge"
+    - txt: "J'aime pas les gens"
