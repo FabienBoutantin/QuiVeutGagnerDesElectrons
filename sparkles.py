@@ -30,7 +30,7 @@ class Sparkles:
     __slots__ = (
         "rng", "count", "surfs", "surf_len",
         "xs", "ys", "dxs", "dys",
-        "age", "life_dt"
+        "age", "life_dt", "gravity"
     )
 
     def __init__(self, surfs, count=SPARKLE_COUNT, gravity=False):
@@ -40,20 +40,27 @@ class Sparkles:
         self.rng = numpy.random.default_rng(128)
 
         self.count = count
+        self.gravity = gravity
 
         self.surfs = surfs
         self.surf_len = len(surfs)
 
-        self.xs = self.rng.random(count) * WIDTH
-        self.ys = self.rng.random(count) * WIDTH
-        self.age = self.rng.random(count)
+        self.reset()
 
-        self.dxs = 0.001 * (0.5 - self.rng.random(count))
-        if gravity:
-            self.dys = 0.001 * (0.5 + numpy.full(count, 0.5))
+    def reset(self):
+        """
+        Resets the sparkles to their initial state.
+        """
+        self.xs = self.rng.random(self.count) * WIDTH
+        self.ys = self.rng.random(self.count) * WIDTH
+        self.age = self.rng.random(self.count)
+
+        self.dxs = 0.001 * (0.5 - self.rng.random(self.count))
+        if self.gravity:
+            self.dys = 0.001 * (0.5 + numpy.full(self.count, 0.5))
         else:
-            self.dys = 0.001 * (0.5 - self.rng.random(count))
-        self.life_dt = 0.001 * self.rng.random(count)
+            self.dys = 0.001 * (0.5 - self.rng.random(self.count))
+        self.life_dt = 0.001 * self.rng.random(self.count)
 
     def get_count(self):
         """

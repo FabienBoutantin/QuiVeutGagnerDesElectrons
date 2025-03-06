@@ -157,6 +157,7 @@ class Game:
         Resets the game state.
         """
         self.questions.reset()
+        self.sparkles.reset()
 
     def step(self, screen, cur_time, dt) -> bool:
         """
