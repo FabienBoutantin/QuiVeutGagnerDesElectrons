@@ -92,7 +92,7 @@ class PhonePage(Page):
             )
         else:
             texts.append(
-                ("Je ne suis pas sur, mais :", DEFAULT_TEXT_COLOR)
+                ("Je ne suis pas sûr, mais :", DEFAULT_TEXT_COLOR)
             )
         texts.append((f"{chr(ord('A')+idx)} à {v}%", DEFAULT_TEXT_COLOR))
 
