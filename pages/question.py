@@ -209,7 +209,7 @@ class QuestionPage(Page):
         used = self.question_list.is_public_used
         action = self.question_list.use_public
         txt = fonts.normal().render(
-            "Publique",
+            "Public",
             True,
             ANSWER_SELECTION_COLOR
         ).convert_alpha()
