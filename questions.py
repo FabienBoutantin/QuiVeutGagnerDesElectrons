@@ -28,7 +28,7 @@ from pathlib import Path
 from random import randint, sample
 from yaml import load, SafeLoader
 
-from config import QUESTION_COUNT
+from config import QUESTION_COUNT, RANDOMIZE_CHOICES
 from utils import VictoryException, GoodAnswerException, BadAnswerException, \
     FiftyException, PhoneException, PublicException
 
@@ -48,7 +48,12 @@ class Question:
         self.fifty_fifty = set()
         self.phone = None
         self.public = None
-        for i, choice in enumerate(data["choices"]):
+        if RANDOMIZE_CHOICES:
+            iterator = enumerate(sample(data["choices"], 4))
+        else:
+            iterator = enumerate(data["choices"])
+
+        for i, choice in iterator:
             self.answers.append(choice["txt"])
             if choice.get("correct", False):
                 self.correct_answer = i
