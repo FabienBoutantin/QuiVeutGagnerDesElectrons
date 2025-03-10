@@ -21,7 +21,7 @@ from config import WIDTH, HEIGHT, QUESTION_HEIGHT, QUESTION_SPAN, \
                    ANSWER_HEIGHT, ANSWER_SPAN, \
                    ANSWER_LINE_COLOR, QUESTION_TEXT_COLOR, \
                    ANSWER_SELECTION_COLOR, ANSWER_BACKGROUND_COLOR, \
-                   DEFAULT_TEXT_COLOR, BAD_TEXT_COLOR
+                   DEFAULT_TEXT_COLOR, BAD_TEXT_COLOR, QUESTION_COUNT
 from fonts import fonts
 from pages.base_page import Page
 from questions import QuestionList
@@ -109,6 +109,17 @@ class QuestionPage(Page):
         """
         Initializes the question and answer surfaces.
         """
+        idx = self.question_list.current_question + 1
+        self.question_idx_surf = fonts.small().render(
+            f"Question {idx} / {QUESTION_COUNT}",
+            True,
+            DEFAULT_TEXT_COLOR
+        )
+        self.question_idx_pos = (
+            QUESTION_SPAN,
+            QUESTION_SPAN
+        )
+
         self.question_surf = pygame.surface.Surface(
             (WIDTH, QUESTION_HEIGHT), pygame.SRCALPHA
         )
@@ -279,6 +290,11 @@ class QuestionPage(Page):
         """
         screen.blit(
             self.logo_surface, self.logo_pos
+        )
+
+        screen.blit(
+            self.question_idx_surf,
+            self.question_idx_pos
         )
 
         screen.blit(
