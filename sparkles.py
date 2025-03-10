@@ -44,6 +44,10 @@ class Sparkles:
 
         self.surfs = surfs
         self.surf_len = len(surfs)
+        self.xs, self.ys = None, None
+        self.dxs, self.dys = None, None
+        self.age = None
+        self.life_dt = None
 
         self.reset()
 
