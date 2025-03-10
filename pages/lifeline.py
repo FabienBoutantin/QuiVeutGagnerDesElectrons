@@ -22,6 +22,7 @@ from pages.base_page import Page
 from config import WIDTH, HEIGHT, \
     ANSWER_SELECTION_COLOR, DEFAULT_TEXT_COLOR
 from fonts import fonts
+from questions import Question
 from utils import BackToQuestionException
 from utils import ease_out, clamp
 
@@ -74,7 +75,7 @@ class PhonePage(Page):
     Represents the screen displayed when the player uses the phone-a-friend
     lifeline.
     """
-    def __init__(self, question):
+    def __init__(self, question: Question):
         """
         Initializes the PhonePage object with the given question.
         """
@@ -88,13 +89,17 @@ class PhonePage(Page):
         idx, v = question.phone
         if question.is_right_answer(idx):
             texts.append(
-                ("Je pense que la réponse est :", DEFAULT_TEXT_COLOR)
+                ("Je suis sûr que la réponse est :", DEFAULT_TEXT_COLOR)
             )
         else:
             texts.append(
-                ("Je ne suis pas sûr, mais :", DEFAULT_TEXT_COLOR)
+                (
+                    f"Je ne sais pas. Peut-être : {chr(ord('A')+idx)}",
+                    DEFAULT_TEXT_COLOR
+                )
             )
-        texts.append((f"{chr(ord('A')+idx)} à {v}%", DEFAULT_TEXT_COLOR))
+        texts.append((f"{question.answers[idx]}", ANSWER_SELECTION_COLOR))
+        texts.append((f"à {v}%", DEFAULT_TEXT_COLOR))
 
         self.surfaces = []
         for txt, color in texts:
@@ -106,7 +111,7 @@ class PhonePage(Page):
         """
         Draws the phone-a-friend screen on the given screen.
         """
-        if cur_time - self.start_time > 5:
+        if cur_time - self.start_time > 8:
             raise BackToQuestionException()
         self.draw_surfaces_v(screen, HEIGHT // 4, self.surfaces)
 
