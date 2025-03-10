@@ -109,9 +109,9 @@ class QuestionPage(Page):
         """
         Initializes the question and answer surfaces.
         """
-        idx = self.question_list.current_question + 1
         self.question_idx_surf = fonts.small().render(
-            f"Question {idx} / {QUESTION_COUNT}",
+            f"Question {self.question_list.current_question + 1} / " +
+            str(QUESTION_COUNT),
             True,
             DEFAULT_TEXT_COLOR
         )
