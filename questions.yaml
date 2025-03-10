@@ -24,11 +24,11 @@
 
 - question: Qu'est ce que l'autoconsommation ?
   choices:
-    - txt: La consommation de la voiture
+    - txt: 5 litres aux 100 sur autoroute
     - txt: Consommer l'électricité que l'on produit
       correct: true
     - txt: Consommer l'électricité de son voisin
-    - txt: Une utopie
+    - txt: La revente de sa production
 
 - question: Combien coûte l'adhésion ?
   choices:

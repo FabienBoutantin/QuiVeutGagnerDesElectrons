@@ -24,6 +24,7 @@ from config import WIDTH, HEIGHT, QUESTION_HEIGHT, QUESTION_SPAN, \
                    DEFAULT_TEXT_COLOR, BAD_TEXT_COLOR
 from fonts import fonts
 from pages.base_page import Page
+from questions import QuestionList
 from utils import get_logo_surf
 
 
@@ -78,7 +79,7 @@ class QuestionPage(Page):
     """
     Represents the page where the question and answers are displayed.
     """
-    def __init__(self, question_list):
+    def __init__(self, question_list: QuestionList):
         """
         Initializes the QuestionPage object with the given question list.
         """
@@ -238,6 +239,10 @@ class QuestionPage(Page):
         Handles the given key press event.
         """
         try:
+            if key == pygame.K_SPACE:
+                self.question_list.validate_answer(
+                    self.question_list.get_current_question().correct_answer
+                )
             answer = ANSWER_KEYS.index(key)
             self.question_list.validate_answer(answer)
         except ValueError:

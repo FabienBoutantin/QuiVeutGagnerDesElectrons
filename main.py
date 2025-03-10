@@ -59,21 +59,6 @@ def init_pygame():
     return screen, pygame.time.Clock()
 
 
-def handle_events(current_page):
-    """
-    Handles pygame events and delegates them to the current page.
-    """
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q and \
-                    pygame.key.get_mods() & pygame.KMOD_CTRL:
-                return False
-        current_page.handle_event(event)
-    return True
-
-
 class Game:
     """
     Manages the game state, including questions, pages, and background effects.
@@ -159,12 +144,24 @@ class Game:
         self.questions.reset()
         self.sparkles.reset()
 
+    def handle_events(self):
+        """
+        Handles pygame events and delegates them to the current page.
+        """
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                return False
+            self.current_page.handle_event(event)
+        return True
+
     def step(self, screen, cur_time, dt) -> bool:
         """
         Advances the game state by one frame.
         """
         try:
-            if not handle_events(self.current_page):
+            if not self.handle_events():
                 return True
             self.fill_background(screen, cur_time, dt)
             self.current_page.draw(screen, cur_time, dt)

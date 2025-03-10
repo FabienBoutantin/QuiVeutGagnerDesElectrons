@@ -147,3 +147,5 @@ class VictoryPage(Page):
         """
         Handles the given event.
         """
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            raise StartupException()
